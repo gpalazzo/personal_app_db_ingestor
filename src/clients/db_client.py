@@ -4,6 +4,7 @@ from pathlib import Path
 from utils.config_vars import db_schema_names
 from env_var_handler.env_var_loader import load_credentials, load_config
 import os
+from sqlalchemy import create_engine
 
 
 local_project_root_dir = Path(__file__).resolve().parents[2]
@@ -27,7 +28,7 @@ class DBClient:
                                     database=db_name,
                                     host=os.getenv("db_host")
                                    )
-
+        self.engine = create_engine(f"postgresql+psycopg2://{os.getenv('db_username')}:{os.getenv('db_password')}@{os.getenv('db_host')}/{db_name}")
         self.cursor = self.cnn.cursor()
 
     def execute_sql_statement(self, sql_file_name: str):
@@ -63,8 +64,3 @@ class DBClient:
         except Exception as e:
             assert False, f"the following error occured with args: {e.args}"
 
-
-obj = DBClient(db_name="financial")
-obj.execute_sql_statement(sql_file_name="create_balance_tbl")
-obj.cnn.close()
-obj.cursor.close()
