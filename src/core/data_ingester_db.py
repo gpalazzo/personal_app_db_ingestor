@@ -11,7 +11,7 @@ def _filter_out_file_names(file_name: str) -> bool:
 
 def _identify_number_signal_and_cast_float(series: pd.Series) -> pd.Series:
     # identify if the number is positive or negative
-    series = series.apply(lambda x: -x if x[-1] == "D" else x)
+    series = series.apply(lambda x: "-" + x if x[-1] == "D" else x)
     # removing letter at the end and casting to float
     return series.apply(lambda x: float(x[:-1]))
      
